@@ -8,10 +8,10 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface Response {
+export interface Response<T> {
   data: {
     status?: 'success' | 'error';
-    data: any;
+    data: T;
     message: string;
     code?: number;
   };
