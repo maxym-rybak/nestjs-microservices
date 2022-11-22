@@ -1,7 +1,7 @@
 export class OrderCreatedEvent {
   constructor(
+    public readonly username: string,
+    public readonly stripeId: string,
     public readonly orderId: string,
-    public readonly userId: string,
-    public readonly price: number,
   ) {}
 }

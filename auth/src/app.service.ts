@@ -1,25 +1,71 @@
 import { Injectable } from '@nestjs/common';
-import { GetUserRequest } from './get-user-request.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AppService {
   private readonly users: any[] = [
     {
-      userId: '123',
-      stripeUserId: '43234',
+      username: 'max',
+      password: 'max password',
+      stripeId: 12,
+      secret: 'Hsd211ak231k',
     },
     {
-      userId: '345',
-      stripeUserId: '27279',
+      username: 'alex',
+      password: 'alex password',
+      stripeId: 13,
+      secret: 'Idqw12kldasdn123l',
     },
   ];
 
-  getHello(): string {
-    return 'Hello World!';
+  getUser(getUserRequest: { secret: string }) {
+    const user = this.users.find(
+      (user) => user.secret === getUserRequest.secret,
+    );
+
+    if (user) {
+      return {
+        value: {
+          status: 'success',
+          data: {
+            username: user.username,
+            stripeId: user.stripeId,
+          },
+          message: '',
+          code: 201,
+        },
+      };
+    } else {
+      return {
+        value: { status: 'error', message: 'Unauthorized', code: 401 },
+      };
+    }
   }
 
-  getUser(getUserRequest: GetUserRequest) {
-    console.log('get_user', getUserRequest);
-    return this.users.find((user) => user.userId === getUserRequest.userId);
+  signIn(signInDto: SignInDto) {
+    const user = this.users.find(
+      (user) => user.username === signInDto.username,
+    );
+
+    if (signInDto.password === user?.password) {
+      return {
+        value: {
+          status: 'success',
+          data: {
+            secret: user.secret,
+          },
+          message: 'signed in',
+          code: 201,
+        },
+      };
+    } else if (!user) {
+      return {
+        value: { status: 'error', message: 'No such user', code: 400 },
+      };
+    } else {
+      return {
+        value: { status: 'error', message: 'Unauthorized', code: 401 },
+      };
+    }
   }
 }
